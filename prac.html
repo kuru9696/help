@@ -57,6 +57,12 @@
             const title = document.getElementById("title").value;
             const naiyo = document.getElementById("naiyo").value;
 
+     request.onupgradeneeded = function(event) {
+    const db = event.target.result;
+    const objectStore = db.createObjectStore("customers", { keyPath: "id" });
+    };
+
+
     const request = indexedDB.open("myDatabase", 1);
     // 成功の場合
     request.onsuccess = function(event) {
@@ -68,6 +74,7 @@
         console.log("データベースが開けませんでした");
     };    
 
+   
         document.getElementById("btn").addEventListener("click", buttonClick,request);
 </script>
 
