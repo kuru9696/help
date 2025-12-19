@@ -1,6 +1,4 @@
-<!DOCTYPE HTML>
-<html>
-<head>
+<html><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
    
@@ -12,7 +10,7 @@
 
     <p>年齢：
         <select id="old">
-            <option value="" selected>選択してください</option>
+            <option value="" selected="">選択してください</option>
             <option value="10">10代</option>
             <option value="20">20代</option>
             <option value="30">30代</option>
@@ -28,7 +26,7 @@
 
     <p>性別：
         <select id="gender">
-            <option value="" selected>選択してください</option>
+            <option value="" selected="">選択してください</option>
             <option value="male">男性</option>
             <option value="female">女性</option>
             <option value="others">その他</option>
@@ -37,7 +35,7 @@
 
     <p>タイトル：
         <select id="title">
-            <option value="" selected>選択してください</option>
+            <option value="" selected="">選択してください</option>
             <option value="carry">荷物運び</option>
             <option value="annai">道案内</option>
             <option value="hand">家の手伝い</option>
@@ -51,7 +49,7 @@
     </p>
 
     <button id="btn">募集する</button>
-</body>
+
 <script>
     function buttonClick() {
             const age = document.getElementById("old").value;
@@ -72,4 +70,5 @@
 
         document.getElementById("btn").addEventListener("click", buttonClick,request);
 </script>
-</html>
+
+</body></html>
