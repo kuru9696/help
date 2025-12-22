@@ -1,16 +1,16 @@
-<html><head>
+<!DOCTYPE html>
+<html>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-   
-    <script>
-    </script>
+    <title>手伝い募集</title>
 </head>
 <body>
     <h1>手伝いを呼びかける</h1>
 
     <p>年齢：
         <select id="old">
-            <option value="old" selected >選択してください</option>
+            <option value="" selected>選択してください</option>
             <option value="10">10代</option>
             <option value="20">20代</option>
             <option value="30">30代</option>
@@ -26,7 +26,7 @@
 
     <p>性別：
         <select id="gender">
-            <option value="gender" selected >選択してください</option>
+            <option value="" selected>選択してください</option>
             <option value="male">男性</option>
             <option value="female">女性</option>
             <option value="others">その他</option>
@@ -35,7 +35,7 @@
 
     <p>タイトル：
         <select id="title">
-            <option value="title" selected >選択してください</option>
+            <option value="" selected>選択してください</option>
             <option value="carry">荷物運び</option>
             <option value="annai">道案内</option>
             <option value="hand">家の手伝い</option>
@@ -51,34 +51,68 @@
     <button id="btn">募集する</button>
 
 <script>
-    function buttonClick() {
-            const age = document.getElementById("old").value;
-            const gender = document.getElementById("gender").value;
-            const title = document.getElementById("title").value;
-            const naiyo = document.getElementById("naiyo").value;
-    ];
+    const dbName = "myDatabase";
+    const storeName = "requests";
 
-     /*request.onupgradeneeded = function(event) {
-    const db = event.target.result;
-    const objectStore = db.createObjectStore("customers", { keyPath: "id" });
-    };*/
+    // 1. データベースを開く（初期化）
+    const request = indexedDB.open(dbName, 1);
 
-
-    const request = indexedDB.open("myDatabase", 1);
-    // 成功の場合
-    request.onsuccess = (event) {
+    // 初めてデータベースを作る時やバージョンが変わる時に実行
+    request.onupgradeneeded = function(event) {
         const db = event.target.result;
+        // 自動で連番IDを振るように設定
+        db.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
+        console.log("ストア（テーブル）を作成しました");
+    };
+
+    request.onsuccess = function(event) {
         console.log("データベースが開けました");
     };
-    // エラーの場合
-    request.onerror = (event) {
-        console.log("データベースが開けませんでした");
+
+    request.onerror = function(event) {
+        console.error("データベースが開けませんでした");
     };
 
-    
+    // 2. ボタンクリック時の処理
+    function buttonClick() {
+        const age = document.getElementById("old").value;
+        const gender = document.getElementById("gender").value;
+        const title = document.getElementById("title").value;
+        const naiyo = document.getElementById("naiyo").value;
 
-   
-        document.getElementById("btn").addEventListener("click", buttonClick,request);
+        // 必須項目が選択されているかチェック
+        if (!age || !gender || !title) {
+            alert("必須項目を選択してください");
+            return;
+        }
+
+        // 保存するオブジェクトの作成
+        const newData = {
+            age: age,
+            gender: gender,
+            title: title,
+            naiyo: naiyo,
+            date: new Date().toLocaleString()
+        };
+
+        // 3. IndexedDBへの書き込み処理
+        const db = request.result; // 開いているDBを取得
+        const transaction = db.transaction([storeName], "readwrite");
+        const store = transaction.objectStore(storeName);
+        const addRequest = store.add(newData);
+
+        addRequest.onsuccess = function() {
+            alert("募集内容を保存しました！");
+            console.log("保存成功:", newData);
+        };
+
+        addRequest.onerror = function() {
+            console.error("保存失敗");
+        };
+    }
+
+    // イベントリスナーの登録
+    document.getElementById("btn").addEventListener("click", buttonClick);
 </script>
-
-</body></html>
+</body>
+</html>
