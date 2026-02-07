@@ -6,113 +6,17 @@
     <title>手伝い募集</title>
 </head>
 <body>
-    <h1>手伝いを呼びかける</h1>
-
-    <p>年齢：
-        <select id="old">
-            <option value="" selected>選択してください</option>
-            <option value="10">10代</option>
-            <option value="20">20代</option>
-            <option value="30">30代</option>
-            <option value="40">40代</option>
-            <option value="50">50代</option>
-            <option value="60">60代</option>
-            <option value="70">70代</option>
-            <option value="80">80代</option>
-            <option value="90">90代</option>
-            <option value="100">100代以降</option>
-        </select>
-    </p>
-
-    <p>性別：
-        <select id="gender">
-            <option value="" selected>選択してください</option>
-            <option value="male">男性</option>
-            <option value="female">女性</option>
-            <option value="others">その他</option>
-        </select>
-    </p>
-
-    <p>タイトル：
-        <select id="title">
-            <option value="" selected>選択してください</option>
-            <option value="carry">荷物運び</option>
-            <option value="annai">道案内</option>
-            <option value="hand">家の手伝い</option>
-            <option value="gerbage">ごみ捨て</option>
-            <option value="others">その他</option>
-        </select>
-    </p>
-
-    <p>募集内容(任意)：  
-        <input type="text" id="naiyo" placeholder="募集内容を入力">
-    </p>
-
-    <button id="btn">募集する</button>
-
-<script>
-    const dbName = "myDatabase";
-    const storeName = "requests";
-
-    // 1. データベースを開く（初期化）
-    const request = indexedDB.open(dbName, 1);
-
-    // 初めてデータベースを作る時やバージョンが変わる時に実行
-    request.onupgradeneeded = function(event) {
-        const db = event.target.result;
-        // 自動で連番IDを振るように設定
-        db.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
-        console.log("ストア（テーブル）を作成しました");
-    };
-
-    request.onsuccess = function(event) {
-        console.log("データベースが開けました");
-    };
-
-    request.onerror = function(event) {
-        console.error("データベースが開けませんでした");
-    };
-
-    // 2. ボタンクリック時の処理
-    function buttonClick() {
-        const age = document.getElementById("old").value;
-        const gender = document.getElementById("gender").value;
-        const title = document.getElementById("title").value;
-        const naiyo = document.getElementById("naiyo").value;
-
-        // 必須項目が選択されているかチェック
-        if (!age || !gender || !title) {
-            alert("必須項目を選択してください");
-            return;
-        }
-
-        // 保存するオブジェクトの作成
-        const newData = {
-            age: age,
-            gender: gender,
-            title: title,
-            naiyo: naiyo,
-            date: new Date().toLocaleString()
-        };
-
-        // 3. IndexedDBへの書き込み処理
-        const db = request.result; // 開いているDBを取得
-        const transaction = db.transaction([storeName], "readwrite");
-        const store = transaction.objectStore(storeName);
-        const addRequest = store.add(newData);
-
-        addRequest.onsuccess = function() {
-            alert("募集内容を保存しました！");
-            console.log("保存成功:", newData);
-        };
-
-        addRequest.onerror = function() {
-            console.error("保存失敗");
-        };
-    }
-
-    // イベントリスナーの登録
-    document.getElementById("btn").addEventListener("click", buttonClick);
-</script>
+    <div id="map"><div>
 </body>
+<script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    L.marker([51.5, -0.09]).addTo(map)
+    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+    .openPopup();
+</script>
 </html>
